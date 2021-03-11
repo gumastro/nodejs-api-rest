@@ -16,4 +16,8 @@ module.exports = app => {
 
         Appointment.add(appointment, res)
     })
+
+    app.patch('/appointments/:id', (req, res) => {
+        Appointment.modify(parseInt(req.params.id), req.body, res)
+    })
 }

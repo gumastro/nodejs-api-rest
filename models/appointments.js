@@ -66,6 +66,21 @@ class Appointment {
             }
         })
     }
+
+    modify(id, values, res) {
+        if(values.appointmentDate) {
+            values.appointmentDate = moment(values.appointmentDate, 'DD-MM-YYYY').format('YYYY-MM-DD HH:mm:ss')
+        }
+        const sql = 'UPDATE Appointments SET ? WHERE id=?'
+
+        connection.query(sql, [values, id], (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else {
+                res.status(200).json(results)
+            }
+        })
+    }
 }
 
 module.exports = new Appointment
