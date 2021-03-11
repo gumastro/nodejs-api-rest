@@ -42,6 +42,30 @@ class Appointment {
             })
         }
     }
+
+    list(res) {
+        const sql = 'SELECT * FROM Appointments'
+
+        connection.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else {
+                res.status(200).json(results)
+            }
+        })
+    }
+
+    searchForId(id, res) {
+        const sql = `SELECT * FROM Appointments WHERE id=${id}`
+
+        connection.query(sql, (error, results) => {
+            if(error) {
+                res.status(400).json(error)
+            } else {
+                res.status(200).json(results[0])
+            }
+        })
+    }
 }
 
 module.exports = new Appointment
