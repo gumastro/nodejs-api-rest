@@ -5,8 +5,7 @@ module.exports = app => {
 
     app.post('/appointments', (req, res) => {
         const appointment = req.body
-        Appointment.add(appointment)
-        
-        res.send('Appointments route and sending a POST')
+
+        Appointment.add(appointment, res)
     })
 }
