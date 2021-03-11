@@ -20,4 +20,8 @@ module.exports = app => {
     app.patch('/appointments/:id', (req, res) => {
         Appointment.modify(parseInt(req.params.id), req.body, res)
     })
+
+    app.delete('/appointments/:id', (req, res) => {
+        Appointment.delete(parseInt(req.params.id), res)
+    })
 }
