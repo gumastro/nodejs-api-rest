@@ -3,6 +3,7 @@ class Tables {
         this.connection = connection
         
         this.createAppointments()
+        this.createPets()
     }
 
     createAppointments() {
@@ -13,6 +14,18 @@ class Tables {
                 console.log(error)
             } else {
                 console.log('[SUCCESS] Appointments table created!')
+            }
+        })
+    }
+
+    createPets() {
+        const sql = 'CREATE TABLE IF NOT EXISTS Pets (id int NOT NULL AUTO_INCREMENT, name varchar(50), image varchar(200), PRIMARY KEY(id))'
+
+        this.connection.query(sql, error => {
+            if(error) {
+                console.log(error)
+            } else {
+                console.log('[SUCCESS] Pets table created!')
             }
         })
     }
