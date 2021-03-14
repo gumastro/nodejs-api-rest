@@ -56,16 +56,8 @@ class Appointment {
         }
     }
 
-    list(res) {
-        const sql = 'SELECT * FROM Appointments'
-
-        connection.query(sql, (error, results) => {
-            if(error) {
-                res.status(400).json(error)
-            } else {
-                res.status(200).json(results)
-            }
-        })
+    list() {
+        return repository.list()
     }
 
     searchForId(id, res) {

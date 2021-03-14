@@ -2,7 +2,9 @@ const Appointment = require('../models/appointments')
 
 module.exports = app => {
     app.get('/appointments', (req, res) => {
-        Appointment.list(res)
+        Appointment.list()
+            .then(results => res.status(200).json(results))
+            .catch(error => res.status(400).json(error))
     })
 
     app.get('/appointments/:id', (req, res) => {
