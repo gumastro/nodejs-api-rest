@@ -14,7 +14,13 @@ module.exports = app => {
     app.post('/appointments', (req, res) => {
         const appointment = req.body
 
-        Appointment.add(appointment, res)
+        Appointment.add(appointment)
+            .then(registeredAppointment => {
+                res.status(201).json(registeredAppointment)
+            })
+            .catch(error => {
+                res.status(400).json(error)
+            })
     })
 
     app.patch('/appointments/:id', (req, res) => {

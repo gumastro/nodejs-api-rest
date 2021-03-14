@@ -1,10 +1,11 @@
 const axios = require('axios')
 const moment = require('moment')
 
-const connection = require('../infrastructure/connection')
+const connection = require('../infrastructure/database/connection')
+const repository = require('../repositories/appointment')
 
 class Appointment {
-    add(appointment, res) {
+    add(appointment) {
         const created = new moment().format('YYYY-MM-DD HH:mm:ss')
         const appointmentDate = moment(appointment.appointmentDate, 'DD-MM-YYYY').format('YYYY-MM-DD HH:mm:ss')
         
@@ -27,20 +28,16 @@ class Appointment {
         const errors = validations.filter(field => !field.valid)
 
         if (errors.length) {
-            res.status(400).json(errors)
+            return new Promise((resolve, reject) => reject(errors))
         } else {
             
             const bookedAppointment = {...appointment, created, appointmentDate}
 
-            const sql = 'INSERT INTO Appointments SET ?'
-
-            connection.query(sql, bookedAppointment, (error, results) => {
-                if(error) {
-                    res.status(400).json(error)
-                } else {
-                    res.status(201).json(appointment)
-                }
-            })
+            return repository.add(bookedAppointment)
+                .then((results) => {
+                    const id = results.insertId
+                    return ({ ...appointment, id })
+                })
         }
     }
 
