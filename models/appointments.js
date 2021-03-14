@@ -5,27 +5,42 @@ const connection = require('../infrastructure/database/connection')
 const repository = require('../repositories/appointment')
 
 class Appointment {
-    add(appointment) {
-        const created = new moment().format('YYYY-MM-DD HH:mm:ss')
-        const appointmentDate = moment(appointment.appointmentDate, 'DD-MM-YYYY').format('YYYY-MM-DD HH:mm:ss')
-        
-        const isDateValid = moment(appointmentDate).isSameOrAfter(created)
-        const isClientValid = appointment.client.length >= 3
+    constructor() {
+        this.isDateValid = ({appointmentDate, created}) => moment(appointmentDate).isSameOrAfter(created)
+        this.isClientValid = (size) => size >= 3
 
-        const validations = [
+        this.validate = (parameters) => {
+            this.validations.filter(field => {
+                const parameter = parameters[field.name]
+
+                return !field.valid(parameter)
+            })
+        }
+
+        this.validations = [
             {
                 name: 'date',
-                valid: isDateValid,
+                valid: this.isDateValid,
                 message: 'Appointment date must be after or equal to current date'
             },
             {
                 name: 'client',
-                valid: isClientValid,
+                valid: this.isClientValid,
                 message: 'Client name must be longer than 2 characters'
             }
         ]
+    }
 
-        const errors = validations.filter(field => !field.valid)
+    add(appointment) {
+        const created = new moment().format('YYYY-MM-DD HH:mm:ss')
+        const appointmentDate = moment(appointment.appointmentDate, 'DD-MM-YYYY').format('YYYY-MM-DD HH:mm:ss')
+
+        const parameters = {
+            date: { appointmentDate, created },
+            client: { size: appointment.client.length }
+        }
+
+        const errors = this.validate(parameters)
 
         if (errors.length) {
             return new Promise((resolve, reject) => reject(errors))
